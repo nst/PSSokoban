@@ -20,7 +20,7 @@ Terminal window 1:
 
 Terminal window 2:
     
-    $ python3 key.py
+    $ stty raw -echo; cat > /tmp/p
 
 Play with arrows in window 2.
 
