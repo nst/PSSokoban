@@ -547,15 +547,16 @@ ChangeToNextLevel
 % main game loop
 {
     (%stdin) (r) file read {
-		dup 10 ne gWin and { % move to next level with anything but enter
-			pop
-			ChangeToNextLevel
-		} if
+		/key exch def
 		
-		_key_Move_b_ {
-			DrawLevel
-		} if
-
+		% move to next level with anything but control chars
+		gWin key 27 ne and key 91 ne and key 10 ne and {
+			ChangeToNextLevel
+		} {
+			key _key_Move_b_ {
+				DrawLevel
+			} if
+		} ifelse
     } {
         exit
     } ifelse
