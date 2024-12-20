@@ -5,7 +5,7 @@ A Sokoban implementation in PostScript
 
 - implement [Sokoban](https://en.wikipedia.org/wiki/Sokoban) in PostScript
 - play Sokoban in GhostView
-- handle input keys directly with unix pipes
+- handle keystrokes immediately using unix pipes
 
 See also:
 
