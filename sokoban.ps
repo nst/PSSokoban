@@ -1,0 +1,563 @@
+%!PS
+%%Title: sokoban.ps
+%%Creator: Nicolas Seriot
+%%BoundingBox: 0 0 600 300
+
+% rm /tmp/p; mkfifo /tmp/p; cat sokoban.ps /tmp/p | gv -
+% rm /tmp/p; mkfifo /tmp/p; cat sokoban.ps /tmp/p | gv -q -media=bbox -
+
+% python3 key.py
+
+% Game symbols:
+% (@) Man
+% (+) ManOnGoal 
+% ($) Box
+% (*) BoxOnGoal
+% (#) Wall
+% (.) Goal
+% ( ) or (-) Floor
+
+/MAX_WIDTH 24 def
+/MAX_HEIGHT 12 def
+
+/Courier findfont 12 scalefont setfont
+
+% converts a level string into a 2D array of characters
+/_s_ParseLevel_a_ {
+
+  /s exch def
+  /sLength s length def
+
+  /lines MAX_HEIGHT array def
+  /line MAX_WIDTH array def
+  
+  /x 0 def % iterates on line
+  /y 0 def % iterates on lines
+
+  0 1 sLength 1 sub {
+    /i exch def
+	
+    /c s i 1 getinterval def
+	
+	c (\n) eq i sLength 1 sub eq or {
+		lines y line put
+		/line MAX_WIDTH array def
+		/y y 1 add def
+		/x 0 def
+    } {
+		c (-) eq c (_) eq or { /c ( ) def } if
+	    line x c put
+		/x x 1 add def    	
+    } ifelse
+
+  } for
+  
+  lines 0 y getinterval
+
+} bind def
+
+% Drawing functions for game elements
+/DrawMan {
+	gsave
+	0 0 1 setrgbcolor
+	newpath
+	5 5 4 0 360 arc
+	closepath
+	fill
+	grestore
+} bind def
+
+/DrawBox {
+	gsave
+	1 0 1 setrgbcolor
+	newpath
+	2 2 moveto
+	2 8 lineto
+	8 8 lineto
+	8 2 lineto
+	2 2 lineto
+	closepath
+	fill
+	grestore
+} bind def
+
+/DrawBoxOnGoal {
+	DrawBox
+	DrawGoal
+} bind def
+
+/DrawWall {
+	gsave
+
+	newpath
+	0 0 moveto
+	0 10 lineto
+	10 10 lineto
+	10 0 lineto
+	0 0 lineto
+	closepath
+
+	gsave
+	0.5 setgray
+	fill
+	grestore
+
+	0 setgray
+	0.5 setlinewidth
+	stroke
+
+	grestore
+} bind def
+
+/DrawGoal {
+	gsave
+
+	newpath
+	5 5 2 0 360 arc
+	closepath
+	
+	gsave
+	1 1 0 setrgbcolor
+	fill
+	grestore
+	
+	0 setgray
+	0.5 setlinewidth
+	stroke
+	
+	grestore
+} bind def
+
+/DrawFloor {
+	gsave
+
+	newpath
+	0 0 moveto
+	0 10 lineto
+	10 10 lineto
+	10 0 lineto
+	0 0 lineto
+	closepath
+	
+	1 setgray
+	fill
+	
+	grestore
+
+} bind def
+
+/DrawManOnGoal {
+	DrawMan
+	DrawGoal
+} bind def
+
+% Maps characters to drawing functions
+/_c_DrawChar {
+	/c exch def
+	
+	c (@) eq { DrawMan } if
+	c (+) eq { DrawManOnGoal } if
+	c ($) eq { DrawBox } if
+	c (*) eq { DrawBoxOnGoal } if
+	c (#) eq { DrawWall } if
+	c (.) eq { DrawGoal } if
+	c (_) eq { DrawFloor } if
+	%c (-) eq { DrawFloor } if
+	%c ( ) eq { DrawFloor } if
+	
+} bind def
+
+/DrawLevel {
+	
+	gsave
+	
+	% background
+	
+	/h MAX_HEIGHT 1 add 10 mul def
+	/w MAX_WIDTH 10 mul def
+
+	/h_min -10 def
+	/h_max h 10 add def
+	/w_min -10 def 
+	/w_max w 10 add def
+	
+	newpath
+	w_min h_min moveto
+	w_min h_max lineto
+	w_max h_max lineto
+	w_max h_min lineto
+	w_min h_min lineto
+	closepath
+	
+	0.95 setgray
+	fill
+
+	grestore
+	
+	% cells
+	
+	{
+		gsave
+		x 10 mul MAX_HEIGHT y sub 10 mul translate
+		c _c_DrawChar
+		grestore
+	} _p_EnumerateLevel
+
+	% moves counter
+	
+	0 0 moveto
+	0.5 setgray
+	
+	/s (moves:   ) def
+	s 6 gMovesStackTop 3 string cvs putinterval
+	s show
+
+	% push counter
+
+	70 0 moveto
+	0.5 setgray
+
+	/s (push:   ) def
+	s 5 gPushCounter 3 string cvs putinterval
+	s show
+	
+	% win message
+
+	140 0 moveto
+	0.5 setgray
+	
+	gWin { (WIN!) show } if
+	
+	%
+	
+	flushpage
+} def
+
+% updates level state and move history
+/_updates_UpdateLevel {
+	
+	/u exch def
+	
+	/uu 3 array def
+		
+	0 1 u length 1 sub {
+		/i exch def
+		
+		/a u i get def
+		
+		a null eq { exit } if
+				
+		/x_ a 0 get def
+		/y_ a 1 get def
+		/c_ a 2 get def
+		
+		/_c gLevel y_ get x_ get def
+		
+		% save current state
+		uu i [x_ y_ _c] put % current value
+		
+		% update push counter
+		_c ($) eq _c (*) eq or {
+			/gPushCounter gPushCounter 1 add def
+		} if
+
+		% update level
+		gLevel y_ get x_ c_ put		
+	} for
+
+	gMovesStack gMovesStackTop uu put % [[x y c], [x, y, c], ...]
+	/gMovesStackTop gMovesStackTop 1 add def
+	
+} bind def
+
+% reverts last move
+/Undo_b_ {
+
+	gMovesStackTop 0 gt {
+
+		/gMovesStackTop gMovesStackTop 1 sub def
+		gMovesStack gMovesStackTop get {
+
+			/a exch def
+			
+			a null eq { exit } if
+			
+			/_x a 0 get def
+			/_y a 1 get def
+			/_c a 2 get def
+			
+			gLevel _y get _x _c put
+
+			% update push counter
+			_c ($) eq _c (*) eq or {
+				/gPushCounter gPushCounter 1 sub def
+			} if
+			
+			flush
+			
+		} forall
+		
+		gMovesStack gMovesStackTop null put
+
+		true
+	} {
+		(-- nothing to undo) ==
+		false
+	} ifelse
+
+} bind def
+
+% iterates through level array
+/_p_EnumerateLevel {
+	/p exch def
+	
+	/nbLines gLevel length def
+	
+	0 1 nbLines 1 sub {
+		/y exch def
+		/line gLevel y get def
+		
+		line null eq { exit } if
+		
+		0 1 line length 1 sub {
+			/x exch def
+			/c line x get def
+	
+			c null eq { exit } if
+	
+			c p
+		} for
+	} for
+	
+} bind def
+
+% look for specified characters
+/_a_FindChars_x_y_ {
+	/a exch def
+	
+	/X null def
+	/Y null def
+	
+	{
+		a {
+			/ac exch def
+			
+			c ac eq {
+				/X x def
+				/Y y def
+				exit
+			} if
+			
+		} forall
+	} _p_EnumerateLevel
+	
+	X
+	Y
+} bind def
+
+% handles player movement and game logic
+/_key_Move_b_ {
+
+	/key exch def
+	/canMove false def
+	
+	(-> ) =only key ==
+		
+    % handle arrow keys (65-68)
+	 65 key eq
+	 66 key eq or
+	 67 key eq or
+	 68 key eq or {
+
+		key 65 ge key 68 le and {
+			/xDir 0 def
+			/yDir 0 def
+
+			65 key eq { /yDir -1 def (* UP)==    } if % UP
+			66 key eq { /yDir  1 def (* DOWN)==  } if % DOWN
+			67 key eq { /xDir  1 def (* RIGHT)== } if % RIGHT
+			68 key eq { /xDir -1 def (* LEFT)==  } if % LEFF
+		} if
+		
+        % find player position
+		[(@) (+)] _a_FindChars_x_y_
+				
+		/my exch def
+		/mx exch def
+		
+		/mx_ mx xDir add def
+		/my_ my yDir add def		
+    	
+		/from gLevel my get mx get def
+		/to   gLevel my_ get mx_ get def
+		
+		(from:) =only from ==
+		(to:) =only to ==
+		
+		/updates 3 array def
+		/updatesCount 0 def
+		
+        % handle different destination types
+		(#) to eq {
+			% can't move into wall
+		} if
+		
+		( ) to eq {
+			/canMove true def
+			/to (@) def
+		} if
+		
+		(.) to eq {
+			/canMove true def
+			/to (+) def
+		} if
+    	
+		% handle box pushing
+		(*) to eq ($) to eq or {
+			
+			/dst gLevel my_ yDir add get mx_ xDir add get def
+			
+			dst ( ) eq {
+				/canMove true def
+				
+				updates updatesCount [mx_ xDir add my_ yDir add ($)] put
+				/updatesCount updatesCount 1 add def
+			} if
+    	    
+			dst (.) eq {
+				/canMove true def
+				updates updatesCount [mx_ xDir add my_ yDir add (*)] put
+				/updatesCount updatesCount 1 add def
+			} if
+    	
+			canMove {
+				to ($) eq { /to (@) def } if
+				to (*) eq { /to (+) def } if
+			} if
+    	
+		} if
+		
+		% update source cell
+		(+) from eq canMove and {
+			/from (.) def
+		} if
+    	
+		(@) from eq canMove and {
+			/from ( ) def
+		} if
+		
+		% apply updates if move is valid
+		canMove {			
+			updates updatesCount [mx  my  from] put
+			/updateCount updatesCount 1 add def
+    	
+			updates updateCount [mx_ my_ to] put
+			/updateCount updateCount 1 add def
+    	
+			updates _updates_UpdateLevel
+			
+			/my mx_ def
+			/my my_ def
+		} if
+		
+		% win when all boxes on goals	
+		[($)] _a_FindChars_x_y_
+		/by exch def
+		/bx exch def
+	
+		% handle undo (z key)
+		by null eq bx null eq and {
+			(WIN) == flush
+			/gWin true def
+		} if
+		
+	} if
+	
+	key 122 eq {
+		(* UNDO *) = flush
+		
+		Undo_b_
+		/canMove exch def
+		
+	} if
+	
+	canMove
+	
+} bind def
+
+% levels from David W. Skinner
+
+/l0 ( ########
+##      #
+#   .   #
+#   $   #
+# .$@$. #
+####$   #
+   #.   #
+   #   ##
+   #####) def
+
+/l1 (   ###
+  ## # ####
+ ##  ###  #
+## $      #
+#   @$ #  #
+### $###  #
+  #  #..  #
+ ## ##.# ##
+ #      ##
+ #     ##
+ #######) def
+
+/l2 ( ## #####
+## ## . #
+# ## $. #
+ ## $   #
+## $@ ###
+# $  ##
+#.. ## ##
+#   # ##
+##### #) def
+ 
+/_l_SetupGameState {
+	/gLevel exch _s_ParseLevel_a_ def
+	/gMovesStack 1024 array def
+	/gMovesStackTop 0 def
+	/gPushCounter 0 def
+	/gWin false def
+} bind def
+
+/gOrderedLevels [l0 l1 l2] def
+/gOrderedLevelsIndex 0 def
+
+/ChangeToNextLevel {
+	gOrderedLevels gOrderedLevelsIndex get _l_SetupGameState
+	DrawLevel
+	/gOrderedLevelsIndex gOrderedLevelsIndex 1 add def
+} bind def
+
+% set up display
+3 3 scale
+20 20 translate
+
+ChangeToNextLevel
+
+% main game loop
+{
+    (%stdin) (r) file read {
+		dup 10 ne gWin and { % move to next level with anything but enter
+			pop
+			ChangeToNextLevel
+		} if
+		
+		_key_Move_b_ {
+			DrawLevel
+		} if
+
+    } {
+        exit
+    } ifelse
+	
+	%gLevel { == } forall
+
+} loop
