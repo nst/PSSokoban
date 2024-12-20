@@ -465,7 +465,6 @@
 		/by exch def
 		/bx exch def
 	
-		% handle undo (z key)
 		by null eq bx null eq and {
 			(WIN) == flush
 			/gWin true def
@@ -473,6 +472,7 @@
 		
 	} if
 	
+	% handle undo (z key)
 	key 122 eq {
 		(* UNDO *) = flush
 		
