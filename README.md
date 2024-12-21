@@ -16,7 +16,7 @@ See also:
 
 Terminal window 1:
 
-    $ rm /tmp/p; mkfifo /tmp/p; cat sokoban.ps /tmp/p | gv -
+    $ mkfifo /tmp/p; cat sokoban.ps /tmp/p | gv -
 
 Terminal window 2:
     
