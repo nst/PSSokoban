@@ -557,7 +557,7 @@ DrawLevel
 		% move to next level with anything but control chars
 		gWin key 27 ne and key 91 ne and key 10 ne and {
 			
-		    gOrderedLevelsIndex gOrderedLevels length lt {
+		    gOrderedLevelsIndex gOrderedLevels length 1 sub lt {
 		        /gOrderedLevelsIndex gOrderedLevelsIndex 1 add def
 		        gOrderedLevels gOrderedLevelsIndex get _l_SetupGameState
 				DrawLevel
