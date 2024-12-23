@@ -210,7 +210,7 @@
 	
 	/s (moves:   ) def
 	s 6 (   ) putinterval
-	s 6 gMovesStackTop 3 string cvs putinterval
+	s 6 gMovesRingBufferTop 3 string cvs putinterval
 	s show
 
 	% push counter
@@ -235,78 +235,81 @@
 	flushpage
 } def
 
-% updates level state and move history
 /_updates_UpdateLevel {
-	
-	/u exch def
-	
-	/uu 3 array def
-		
-	0 1 u length 1 sub {
-		/i exch def
-		
-		/a u i get def
-		
-		a null eq { exit } if
-				
-		/x_ a 0 get def
-		/y_ a 1 get def
-		/c_ a 2 get def
-		
-		/_c gLevel y_ get x_ get def
-		
-		% save current state
-		uu i [x_ y_ _c] put % current value
-		
-		% update push counter
-		_c ($) eq _c (*) eq or {
-			/gPushCounter gPushCounter 1 add def
-		} if
+    /u exch def
+    /uu 3 array def
+        
+    0 1 u length 1 sub {
+        /i exch def
+        /a u i get def
+        a null eq { exit } if
+                
+        /x_ a 0 get def
+        /y_ a 1 get def
+        /c_ a 2 get def
+        
+        /_c gLevel y_ get x_ get def
+        
+        % save current state
+        uu i [x_ y_ _c] put
 
-		% update level
-		gLevel y_ get x_ c_ put		
-	} for
+        % update push counter if moving a box
+        _c ($) eq _c (*) eq or {
+            /gPushCounter gPushCounter 1 add def
+        } if
 
-	gMovesStack gMovesStackTop uu put % [[x y c], [x, y, c], ...]
-	/gMovesStackTop gMovesStackTop 1 add def
-	
+        % update level
+        gLevel y_ get x_ c_ put        
+    } for
+
+    % store move in ring buffer
+    gMovesRingBuffer gMovesRingBufferTop uu put    
+    /gMovesRingBufferTop gMovesRingBufferTop 1 add def
+    /gMovesRingBufferSize gMovesRingBufferSize 1 add def
+    gMovesRingBufferTop gMovesRingBufferMaxSize ge {
+        /gMovesRingBufferTop 0 def
+    } if
+    gMovesRingBufferSize gMovesRingBufferMaxSize gt {
+        /gMovesRingBufferSize gMovesRingBufferMaxSize def
+    } if
 } bind def
 
 % reverts last move
 /Undo_b_ {
+    gMovesRingBufferSize 0 gt {
+        /gMovesRingBufferTop gMovesRingBufferTop 1 sub def
+        /gMovesRingBufferSize gMovesRingBufferSize 1 sub def
+        gMovesRingBufferTop 0 lt {
+            /gMovesRingBufferTop gMovesRingBufferMaxSize 1 sub def
+        } if
+        
+        gMovesRingBuffer gMovesRingBufferTop get {
+            /a exch def
+            
+            a null eq { exit } if
+            
+            /_x a 0 get def
+            /_y a 1 get def
+            /_c a 2 get def
+            
+            gLevel _y get _x _c put
 
-	gMovesStackTop 0 gt {
+            % update push counter
+            _c ($) eq _c (*) eq or {
+                /gPushCounter gPushCounter 1 sub def
+            } if
+            
+            flush
+            
+        } forall
+        
+        gMovesRingBuffer gMovesRingBufferTop null put
 
-		/gMovesStackTop gMovesStackTop 1 sub def
-		gMovesStack gMovesStackTop get {
-
-			/a exch def
-			
-			a null eq { exit } if
-			
-			/_x a 0 get def
-			/_y a 1 get def
-			/_c a 2 get def
-			
-			gLevel _y get _x _c put
-
-			% update push counter
-			_c ($) eq _c (*) eq or {
-				/gPushCounter gPushCounter 1 sub def
-			} if
-			
-			flush
-			
-		} forall
-		
-		gMovesStack gMovesStackTop null put
-
-		true
-	} {
-		(-- nothing to undo) ==
-		false
-	} ifelse
-
+        true
+    } {
+        (-- nothing to undo) ==
+        false
+    } ifelse
 } bind def
 
 % iterates through level array
@@ -468,7 +471,7 @@
 		/bx exch def
 	
 		by null eq bx null eq and {
-			(WIN) == flush
+			(WIN) = flush
 			/gWin true def
 		} if
 		
@@ -520,23 +523,32 @@
 #.. ## ##
 #   # ##
 ##### #) def
- 
+  
 /_l_SetupGameState {
-	/gLevel exch _s_ParseLevel_a_ def
-	/gMovesStack 10000 array def
-	/gMovesStackTop 0 def
-	/gPushCounter 0 def
-	/gWin false def
+    /gLevel exch _s_ParseLevel_a_ def
+    /gMovesRingBufferMaxSize 1024 def
+    /gMovesRingBuffer gMovesRingBufferMaxSize array def
+    /gMovesRingBufferTop 0 def
+    /gMovesRingBufferSize 0 def
+    /gPushCounter 0 def
+    /gWin false def
 } bind def
 
 /gOrderedLevels [l0 l1 l2] def
 /gOrderedLevelsIndex 0 def
 
 /ChangeToNextLevel {
-	gOrderedLevels gOrderedLevelsIndex get _l_SetupGameState
-	DrawLevel
-	/gOrderedLevelsIndex gOrderedLevelsIndex 1 add def
+	
+    gOrderedLevelsIndex gOrderedLevels length lt {
+        gOrderedLevels gOrderedLevelsIndex get _l_SetupGameState
+        DrawLevel
+        /gOrderedLevelsIndex gOrderedLevelsIndex 1 add def
+    } {
+        (No more levels!) =
+    } ifelse
 } bind def
+
+/stdin (%stdin) (r) file def
 
 % set up display
 3 3 scale
@@ -546,7 +558,7 @@ ChangeToNextLevel
 
 % main game loop
 {
-    (%stdin) (r) file read {
+    stdin read {
 		/key exch def
 		
 		% move to next level with anything but control chars
