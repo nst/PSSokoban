@@ -16,7 +16,7 @@ See also:
 
 Terminal window 1:
 
-    $ rm /tmp/p; mkfifo /tmp/p; cat sokoban.ps /tmp/p | gv -
+    $ mkfifo /tmp/p; cat sokoban.ps /tmp/p | gv -
 
 Terminal window 2:
     
@@ -24,7 +24,7 @@ Terminal window 2:
 
 Play with arrows in window 2.
 
-Cancel moves with 'z' key.
+Cancel moves with `z` key.
 
 <img src="pssokoban.png" width="500" align="center"></src>
 
