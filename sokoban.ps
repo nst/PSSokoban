@@ -20,7 +20,7 @@
 /MAX_WIDTH 24 def
 /MAX_HEIGHT 12 def
 
-/Courier findfont 12 scalefont setfont
+/Courier findfont 10 scalefont setfont
 
 % converts a level string into a 2D array of characters
 /_s_ParseLevel_a_ {
@@ -203,25 +203,28 @@
 		grestore
 	} _p_EnumerateLevel
 
-	% moves counter
+	% level number
 	
 	0 0 moveto
 	0.5 setgray
-	
-	/s (moves:   ) def
-	s 6 (   ) putinterval
-	s 6 gMovesRingBufferTop 3 string cvs putinterval
-	s show
+	(Level:) show
+	gOrderedLevelsIndex 2 string cvs show
 
+	% moves counter
+	
+	60 0 moveto
+	0.5 setgray
+	
+	(Moves:) show
+	gMovesRingBufferTop 3 string cvs show
+	
 	% push counter
 
-	70 0 moveto
+	120 0 moveto
 	0.5 setgray
 
-	/s (push:   ) def
-	s 5 (   ) putinterval
-	s 5 gPushCounter 3 string cvs putinterval
-	s show
+	(Push:) show
+	gPushCounter 3 string cvs show
 	
 	% win message
 
@@ -541,7 +544,6 @@
 	
     gOrderedLevelsIndex gOrderedLevels length lt {
         gOrderedLevels gOrderedLevelsIndex get _l_SetupGameState
-        DrawLevel
         /gOrderedLevelsIndex gOrderedLevelsIndex 1 add def
     } {
         (No more levels!) =
@@ -554,7 +556,8 @@
 3 3 scale
 20 20 translate
 
-ChangeToNextLevel
+gOrderedLevels gOrderedLevelsIndex get _l_SetupGameState
+DrawLevel
 
 % main game loop
 {
