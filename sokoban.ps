@@ -20,6 +20,8 @@
 /MAX_WIDTH 24 def
 /MAX_HEIGHT 12 def
 
+/RING_BUFFER_MAX_SIZE 5000 def
+
 /Courier findfont 10 scalefont setfont
 
 % converts a level string into a 2D array of characters
@@ -216,7 +218,7 @@
 	0.5 setgray
 	
 	(Moves:) show
-	gMovesRingBufferTop 3 string cvs show
+	gMovesRingBufferSize 3 string cvs show
 	
 	% push counter
 
@@ -269,11 +271,11 @@
     gMovesRingBuffer gMovesRingBufferTop uu put    
     /gMovesRingBufferTop gMovesRingBufferTop 1 add def
     /gMovesRingBufferSize gMovesRingBufferSize 1 add def
-    gMovesRingBufferTop gMovesRingBufferMaxSize ge {
+    gMovesRingBufferTop RING_BUFFER_MAX_SIZE ge {
         /gMovesRingBufferTop 0 def
     } if
-    gMovesRingBufferSize gMovesRingBufferMaxSize gt {
-        /gMovesRingBufferSize gMovesRingBufferMaxSize def
+    gMovesRingBufferSize RING_BUFFER_MAX_SIZE gt {
+        /gMovesRingBufferSize RING_BUFFER_MAX_SIZE def
     } if
 } bind def
 
@@ -283,7 +285,7 @@
         /gMovesRingBufferTop gMovesRingBufferTop 1 sub def
         /gMovesRingBufferSize gMovesRingBufferSize 1 sub def
         gMovesRingBufferTop 0 lt {
-            /gMovesRingBufferTop gMovesRingBufferMaxSize 1 sub def
+            /gMovesRingBufferTop RING_BUFFER_MAX_SIZE 1 sub def
         } if
         
         gMovesRingBuffer gMovesRingBufferTop get {
@@ -529,8 +531,7 @@
   
 /_l_SetupGameState {
     /gLevel exch _s_ParseLevel_a_ def
-    /gMovesRingBufferMaxSize 1024 def
-    /gMovesRingBuffer gMovesRingBufferMaxSize array def
+    /gMovesRingBuffer RING_BUFFER_MAX_SIZE array def
     /gMovesRingBufferTop 0 def
     /gMovesRingBufferSize 0 def
     /gPushCounter 0 def
