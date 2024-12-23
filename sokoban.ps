@@ -228,7 +228,7 @@
 	
 	% win message
 
-	140 0 moveto
+	0 20 moveto
 	0.5 setgray
 	
 	gWin { (WIN!) show } if
@@ -540,16 +540,6 @@
 /gOrderedLevels [l0 l1 l2] def
 /gOrderedLevelsIndex 0 def
 
-/ChangeToNextLevel {
-	
-    gOrderedLevelsIndex gOrderedLevels length lt {
-        gOrderedLevels gOrderedLevelsIndex get _l_SetupGameState
-        /gOrderedLevelsIndex gOrderedLevelsIndex 1 add def
-    } {
-        (No more levels!) =
-    } ifelse
-} bind def
-
 /stdin (%stdin) (r) file def
 
 % set up display
@@ -566,7 +556,14 @@ DrawLevel
 		
 		% move to next level with anything but control chars
 		gWin key 27 ne and key 91 ne and key 10 ne and {
-			ChangeToNextLevel
+			
+		    gOrderedLevelsIndex gOrderedLevels length lt {
+		        /gOrderedLevelsIndex gOrderedLevelsIndex 1 add def
+		        gOrderedLevels gOrderedLevelsIndex get _l_SetupGameState
+				DrawLevel
+		    } {
+		        (No more levels!) =
+		    } ifelse
 		} {
 			key _key_Move_b_ {
 				DrawLevel
