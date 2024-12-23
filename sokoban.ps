@@ -6,7 +6,7 @@
 % rm /tmp/p; mkfifo /tmp/p; cat sokoban.ps /tmp/p | gv -
 % rm /tmp/p; mkfifo /tmp/p; cat sokoban.ps /tmp/p | gv -q -media=bbox -
 
-% python3 key.py
+% stty raw -echo; cat > /tmp/p
 
 % Game symbols:
 % (@) Man
