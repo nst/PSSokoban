@@ -20,7 +20,7 @@
 /MAX_WIDTH 24 def
 /MAX_HEIGHT 12 def
 
-/RING_BUFFER_MAX_SIZE 4096 def
+/RB_SIZE 1024 def % moves ring buffer
 
 /Courier findfont 10 scalefont setfont
 
@@ -218,7 +218,7 @@
 	0.5 setgray
 	
 	(Moves:) show
-	gMovesRingBufferSize 3 string cvs show
+	movesCount 3 string cvs show
 	
 	% push counter
 
@@ -226,7 +226,7 @@
 	0.5 setgray
 
 	(Push:) show
-	gPushCounter 3 string cvs show
+	pushCount 3 string cvs show
 	
 	% win message
 
@@ -240,7 +240,7 @@
 	flushpage
 } def
 
-/_updates_UpdateLevel {
+/_updates_UpdateLevel {	
     /u exch def
     /uu 3 array def
         
@@ -260,7 +260,7 @@
 
         % update push counter if moving a box
         _c ($) eq _c (*) eq or {
-            /gPushCounter gPushCounter 1 add def
+    	    /pushCount pushCount 1 add def
         } if
 
         % update level
@@ -268,53 +268,44 @@
     } for
 
     % store move in ring buffer
-    gMovesRingBuffer gMovesRingBufferTop uu put    
-    /gMovesRingBufferTop gMovesRingBufferTop 1 add def
-    /gMovesRingBufferSize gMovesRingBufferSize 1 add def
-    gMovesRingBufferTop RING_BUFFER_MAX_SIZE ge {
-        /gMovesRingBufferTop 0 def
-    } if
-    gMovesRingBufferSize RING_BUFFER_MAX_SIZE gt {
-        /gMovesRingBufferSize RING_BUFFER_MAX_SIZE def
-    } if
+	rb rbh uu put
+	/rbh rbh 1 add RB_SIZE mod def
 } bind def
 
 % reverts last move
 /Undo_b_ {
-    gMovesRingBufferSize 0 gt {
-        /gMovesRingBufferTop gMovesRingBufferTop 1 sub def
-        /gMovesRingBufferSize gMovesRingBufferSize 1 sub def
-        gMovesRingBufferTop 0 lt {
-            /gMovesRingBufferTop RING_BUFFER_MAX_SIZE 1 sub def
-        } if
-        
-        gMovesRingBuffer gMovesRingBufferTop get {
-            /a exch def
-            
-            a null eq { exit } if
-            
-            /_x a 0 get def
-            /_y a 1 get def
-            /_c a 2 get def
-            
-            gLevel _y get _x _c put
+	
+	rbh 0 eq { RB_SIZE 1 sub } { rbh 1 sub } ifelse
+	/rbh exch def
+	/uu rb rbh get def
+	rb rbh null put
+	
+	/canUndo { uu null ne } def
+	
+	canUndo {
+		uu {
+	    	/a exch def
+			
+	    	a null eq { canUndo exit } if
+    	
+	    	/_x a 0 get def
+	    	/_y a 1 get def
+	    	/_c a 2 get def
+    	
+	    	gLevel _y get _x _c put
 
-            % update push counter
-            _c ($) eq _c (*) eq or {
-                /gPushCounter gPushCounter 1 sub def
-            } if
+	    	% update push counter
+	    	_c ($) eq _c (*) eq or {
+	    	    /pushCount pushCount 1 sub def
+	    	} if
+    	
+	    	flush
             
-            flush
-            
-        } forall
-        
-        gMovesRingBuffer gMovesRingBufferTop null put
+	    } forall		
+		/movesCount movesCount 1 sub def
+	} if
 
-        true
-    } {
-        (-- nothing to undo) ==
-        false
-    } ifelse
+	canUndo
 } bind def
 
 % iterates through level array
@@ -457,7 +448,9 @@
 		} if
 		
 		% apply updates if move is valid
-		canMove {			
+		canMove {
+			/movesCount movesCount 1 add def
+			
 			updates updatesCount [mx  my  from] put
 			/updateCount updatesCount 1 add def
     	
@@ -531,10 +524,10 @@
   
 /_l_SetupGameState {
     /gLevel exch _s_ParseLevel_a_ def
-    /gMovesRingBuffer RING_BUFFER_MAX_SIZE array def
-    /gMovesRingBufferTop 0 def
-    /gMovesRingBufferSize 0 def
-    /gPushCounter 0 def
+	/rb RB_SIZE array def % moves ring buffer
+	/rbh 0 def            % ring buffer head
+	/movesCount 0 def
+    /pushCount 0 def
     /gWin false def
 } bind def
 
