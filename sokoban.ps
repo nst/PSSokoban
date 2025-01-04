@@ -72,14 +72,8 @@
 /DrawBox {
 	gsave
 	1 0 1 setrgbcolor
-	newpath
-	2 2 moveto
-	2 8 lineto
-	8 8 lineto
-	8 2 lineto
-	2 2 lineto
-	closepath
-	fill
+	2 2 translate
+	0 0 6 6 rectfill
 	grestore
 } bind def
 
@@ -91,22 +85,12 @@
 /DrawWall {
 	gsave
 
-	newpath
-	0 0 moveto
-	0 10 lineto
-	10 10 lineto
-	10 0 lineto
-	0 0 lineto
-	closepath
-
-	gsave
 	0.5 setgray
-	fill
-	grestore
+	0 0 10 10 rectfill
 
 	0 setgray
 	0.5 setlinewidth
-	stroke
+	0 0 10 10 rectstroke
 
 	grestore
 } bind def
@@ -548,7 +532,7 @@ DrawLevel
     stdin read {
 		/key exch def
 		
-		% move to next level with anything but control chars
+		% move to next level with any key
 		gWin key 27 ne and key 91 ne and key 10 ne and {
 			
 		    gOrderedLevelsIndex gOrderedLevels length 1 sub lt {
