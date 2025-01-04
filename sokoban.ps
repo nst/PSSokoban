@@ -100,7 +100,6 @@
 
 	newpath
 	5 5 2 0 360 arc
-	closepath
 	
 	gsave
 	1 1 0 setrgbcolor
@@ -158,17 +157,8 @@
 	/w_min -10 def 
 	/w_max w 10 add def
 	
-	newpath
-	w_min h_min moveto
-	w_min h_max lineto
-	w_max h_max lineto
-	w_max h_min lineto
-	w_min h_min lineto
-	closepath
-	
 	0.95 setgray
-	fill
-
+	w_min h_min w_max h_max rectfill
 	grestore
 	
 	% cells
