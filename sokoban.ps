@@ -17,6 +17,8 @@
 % (.) Goal
 % ( ) or (-) Floor
 
+/S 16 def % square size
+
 /MAX_WIDTH 24 def
 /MAX_HEIGHT 12 def
 
@@ -86,11 +88,11 @@
 	gsave
 
 	0.5 setgray
-	0 0 10 10 rectfill
+	0 0 S S rectfill
 
 	0 setgray
 	0.5 setlinewidth
-	0 0 10 10 rectstroke
+	0 0 S S rectstroke
 
 	grestore
 } bind def
@@ -117,7 +119,7 @@
 	gsave
 
 	1 setgray
-	0 0 10 10 rectfill
+	0 0 S S rectfill
 	
 	grestore
 } bind def
@@ -149,13 +151,13 @@
 	
 	% background
 	
-	/h MAX_HEIGHT 1 add 10 mul def
-	/w MAX_WIDTH 10 mul def
+	/h MAX_HEIGHT 1 add S mul def
+	/w MAX_WIDTH S mul def
 
-	/h_min -10 def
-	/h_max h 10 add def
-	/w_min -10 def 
-	/w_max w 10 add def
+	/h_min S neg def
+	/h_max h S add def
+	/w_min S neg def 
+	/w_max w S add def
 	
 	0.95 setgray
 	w_min h_min w_max h_max rectfill
@@ -163,9 +165,10 @@
 	
 	% cells
 	
-	{
+	{		
+		/c exch def
 		gsave
-		x 10 mul MAX_HEIGHT y sub 10 mul translate
+		x S mul MAX_HEIGHT y sub S mul translate
 		c _c_DrawChar
 		grestore
 	} _p_EnumerateLevel
@@ -287,14 +290,14 @@
 		
 		0 1 line length 1 sub {
 			/x exch def
-			/c line x get def
-	
-			c null eq { exit } if
-	
-			c p
+			/c_ line x get def
+	    
+			c_ null eq { exit } if
+	    
+			c_ p
 		} for
 	} for
-	
+		
 } bind def
 
 % look for specified characters
@@ -305,6 +308,7 @@
 	/Y null def
 	
 	{
+		/c exch def
 		a {
 			/ac exch def
 			
