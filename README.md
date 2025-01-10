@@ -26,7 +26,7 @@ Play with arrows in window 2.
 
 Cancel moves with `z` key.
 
-<video controls="" loop="" muted="" width="500" poster="pssokoban.mp4" playsinline=""></video>
+[![PSSokoban](pssokoban.png)](pssokoban.mp4)
 
 ### Notes and Limitations
 
