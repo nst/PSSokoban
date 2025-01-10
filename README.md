@@ -26,7 +26,7 @@ Play with arrows in window 2.
 
 Cancel moves with `z` key.
 
-<img src="pssokoban.png" width="500" align="center"></src>
+<img src="pssokoban.png" width="320" align="center"></src>
 
 ### Notes and Limitations
 
