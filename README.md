@@ -1,6 +1,8 @@
 # PSSokoban
 A Sokoban implementation in PostScript
 
+<img src="pssokoban.png" width="320" align="center"></src>
+
 #### Motivation
 
 - implement [Sokoban](https://en.wikipedia.org/wiki/Sokoban) in PostScript
@@ -25,8 +27,6 @@ Terminal window 2:
 Play with arrows in window 2.
 
 Cancel moves with `z` key.
-
-<img src="pssokoban.png" width="320" align="center"></src>
 
 ### Notes and Limitations
 
