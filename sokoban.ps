@@ -51,7 +51,7 @@
 		/y y 1 add def
 		/x 0 def
     } {
-		c (-) eq c (_) eq or { /c ( ) def } if
+        c (_) eq { /c (-) def } if % XSB format http://sokoban.org/about_sokoban.php
 	    line x c put
 		/x x 1 add def    	
     } ifelse
@@ -250,7 +250,7 @@
 	c (.) eq { DrawGoal } if
 	c (_) eq { DrawFloor } if
 	c (-) eq { DrawFloor } if
-	c ( ) eq { DrawFloor } if
+	%c ( ) eq {  } if
 	
 } bind def
 
@@ -268,7 +268,7 @@
 	/w_min S neg def 
 	/w_max w S add def
 	
-	0.95 setgray
+	1 setgray
 	w_min h_min w_max h_max rectfill
 	grestore
 	
@@ -485,7 +485,7 @@
 			% can't move into wall
 		} if
 		
-		( ) to eq {
+		(-) to eq {
 			/canMove true def
 			/to (@) def
 		} if
@@ -500,7 +500,7 @@
 			
 			/dst gLevel my_ yDir add get mx_ xDir add get def
 			
-			dst ( ) eq {
+			dst (-) eq {
 				/canMove true def
 				
 				updates updatesCount [mx_ xDir add my_ yDir add ($)] put
@@ -526,7 +526,7 @@
 		} if
     	
 		(@) from eq canMove and {
-			/from ( ) def
+			/from (-) def
 		} if
 		
 		% apply updates if move is valid
@@ -573,35 +573,35 @@
 % levels from David W. Skinner
 
 /l0 ( ########
-##      #
-#   .   #
-#   $   #
-# .$@$. #
-####$   #
-   #.   #
-   #   ##
+##------#
+#---.---#
+#---$---#
+#-.$@$.-#
+####$---#
+   #.---#
+   #---##
    #####) def
 
 /l1 (   ###
-  ## # ####
- ##  ###  #
-## $      #
-#   @$ #  #
-### $###  #
-  #  #..  #
- ## ##.# ##
- #      ##
- #     ##
+  ##-# ####
+ ##--###--#
+##-$------#
+#---@$-#--#
+###-$###--#
+  #--#..--#
+ ##-##.#-##
+ #------##
+ #-----##
  #######) def
 
 /l2 ( ## #####
-## ## . #
-# ## $. #
- ## $   #
-## $@ ###
-# $  ##
-#.. ## ##
-#   # ##
+## ##-.-#
+# ##-$.-#
+ ##-$---#
+##-$@-###
+#-$--##
+#..-## ##
+#---# ##
 ##### #) def
   
 /_l_SetupGameState {
@@ -619,7 +619,7 @@
 /stdin (%stdin) (r) file def
 
 % set up display
-3 3 scale
+2 2 scale
 20 20 translate
 
 gOrderedLevels gOrderedLevelsIndex get _l_SetupGameState
