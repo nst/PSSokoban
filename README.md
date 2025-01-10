@@ -26,7 +26,7 @@ Play with arrows in window 2.
 
 Cancel moves with `z` key.
 
-<video src="pssokoban.mp4" controls="controls" style="max-width: 500px;"></video>
+<img src="pssokoban.png" width="500" align="center"></src>
 
 ### Notes and Limitations
 
