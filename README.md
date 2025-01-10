@@ -26,8 +26,10 @@ Play with arrows in window 2.
 
 Cancel moves with `z` key.
 
-<img src="pssokoban.png" width="500" align="center"></src>
+<video controls="" loop="" muted="" width="500" poster="pssokoban.mp4" playsinline=""></video>
 
-### Limitations
+### Notes and Limitations
+
+Character icon from https://opengameart.org/sites/default/files/characters_1.png
 
 Tested only on macOS 15.
