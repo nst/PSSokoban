@@ -281,7 +281,7 @@ end
 	grestore
 } def
 
-/DrawLevel {
+/DrawLevelAndInfos {
 	
 	gsave
 	
@@ -643,7 +643,7 @@ end
 20 20 translate
 
 levels levelsIndex get _l_SetupGameState
-DrawLevel
+DrawLevelAndInfos
 
 % main game loop
 {
@@ -658,7 +658,7 @@ DrawLevel
 		        levels levelsIndex get _l_SetupGameState
 				
 				undoManager /reset call
-				DrawLevel
+				DrawLevelAndInfos
 		    } {
 		        (No more levels!) =
 		    } ifelse
