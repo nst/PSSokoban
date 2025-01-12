@@ -8,8 +8,6 @@
 
 % stty raw -echo; cat > /tmp/p
 
-% TODO: optimize drawing
-
 % Game symbols:
 % (@) Man
 % (+) ManOnGoal 
@@ -272,6 +270,17 @@ end
 	
 } bind def
 
+/_c_x_y_DrawChar {
+	/y exch def
+	/x exch def
+	/c exch def
+	
+	gsave
+	x S mul MAX_HEIGHT y sub S mul translate
+	c _c_DrawChar
+	grestore
+} def
+
 /DrawLevel {
 	
 	gsave
@@ -294,10 +303,7 @@ end
 	
 	{		
 		/c exch def
-		gsave
-		x S mul MAX_HEIGHT y sub S mul translate
-		c _c_DrawChar
-		grestore
+		c x y _c_x_y_DrawChar
 	} _p_EnumerateLevel
 	
 	gsave
@@ -307,7 +313,7 @@ end
 	0 0 moveto
 	0.5 setgray
 	(Level:) show
-	gOrderedLevelsIndex 2 string cvs show
+	levelsIndex 2 string cvs show
 
 	% moves counter
 	
@@ -363,7 +369,8 @@ end
         } if
 
         % update level
-        gLevel y_ get x_ c_ put        
+        gLevel y_ get x_ c_ put
+		c_ x_ y_ _c_x_y_DrawChar
     } for
 
 	uu undoManager /do call
@@ -387,7 +394,7 @@ end
 	    	/_c a 2 get def
     	
 	    	gLevel _y get _x _c put
-			% TODO: redraw
+			_c _x _y _c_x_y_DrawChar
 
 	    	% update push counter
 	    	_c ($) eq _c (*) eq or {
@@ -453,12 +460,11 @@ end
 } bind def
 
 % handles player movement and game logic
-% TODO: return list of coordinates to redraw
 /_key_Move_b_ {
 
 	/key exch def
 	/canMove false def
-	
+		
 	(-> ) =only key ==
 		
     % handle arrow keys (65-68)
@@ -626,8 +632,8 @@ end
     /gWin false def
 } bind def
 
-/gOrderedLevels [l0 l1 l2] def
-/gOrderedLevelsIndex 0 def
+/levels [l0 l1 l2] def
+/levelsIndex 0 def
 
 /stdin (%stdin) (r) file def
 
@@ -635,7 +641,7 @@ end
 2 2 scale
 20 20 translate
 
-gOrderedLevels gOrderedLevelsIndex get _l_SetupGameState
+levels levelsIndex get _l_SetupGameState
 DrawLevel
 
 % main game loop
@@ -646,9 +652,9 @@ DrawLevel
 		% move to next level with any key
 		gWin key 27 ne and key 91 ne and key 10 ne and {
 			
-		    gOrderedLevelsIndex gOrderedLevels length 1 sub lt {
-		        /gOrderedLevelsIndex gOrderedLevelsIndex 1 add def
-		        gOrderedLevels gOrderedLevelsIndex get _l_SetupGameState
+		    levelsIndex levels length 1 sub lt {
+		        /levelsIndex levelsIndex 1 add def
+		        levels levelsIndex get _l_SetupGameState
 				
 				undoManager /reset call
 				DrawLevel
@@ -657,9 +663,9 @@ DrawLevel
 		    } ifelse
 		} {
 			key _key_Move_b_ {
-				DrawLevel % TODO: remove
-				% TODO: draw changed coordinates only
 				% TODO: draw infos
+				flush
+				flushpage
 			} if
 		} ifelse
     } {
