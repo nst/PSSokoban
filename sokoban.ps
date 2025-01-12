@@ -8,6 +8,8 @@
 
 % stty raw -echo; cat > /tmp/p
 
+% TODO: optimize drawing
+
 % Game symbols:
 % (@) Man
 % (+) ManOnGoal 
@@ -24,9 +26,28 @@
 /MAX_WIDTH 24 def
 /MAX_HEIGHT 12 def
 
-/RB_SIZE 1024 def % moves ring buffer
+%---------------------------------------
+% Undo Manager
+/call { exch begin load exec end } def
+/undoManager 10 dict def
+undoManager begin
+	/MAX 1000 def
+	/ringBuffer MAX array def
+	/head 0 def
+    /do {
+		ringBuffer head 3 -1 roll put
+		/head head 1 add MAX mod def
+	} def
+	/reset { /ringBuffer MAX array def } def
+    /undo {
+		/head head 0 eq { MAX 1 sub } { head 1 sub } ifelse def
+		ringBuffer head get % result
+		ringBuffer head null put
+	} def
+end
+%---------------------------------------
 
-/Courier findfont 10 scalefont setfont
+/Helvetica findfont 10 scalefont setfont
 
 % converts a level string into a 2D array of characters
 /_s_ParseLevel_a_ {
@@ -211,8 +232,6 @@
 
 /_imageData_DrawImage {
 	/imageData exch def
-
-	gsave
 	
 	0 S translate
 	<<
@@ -226,7 +245,6 @@
 	  /Interpolate false % default is false
 	>>
 	image
-	grestore
 
 } bind def
 
@@ -238,7 +256,7 @@
 /DrawManOnFloor { ImageDataManOnFloor _imageData_DrawImage } bind def
 /DrawManOnGoal  { ImageDataManOnGoal  _imageData_DrawImage } bind def
 
-% Maps characters to drawing functions
+% maps characters to drawing functions
 /_c_DrawChar {
 	/c exch def
 	
@@ -348,18 +366,13 @@
         gLevel y_ get x_ c_ put        
     } for
 
-    % store move in ring buffer
-	rb rbh uu put
-	/rbh rbh 1 add RB_SIZE mod def
+	uu undoManager /do call
 } bind def
 
 % reverts last move
 /Undo_b_ {
 	
-	rbh 0 eq { RB_SIZE 1 sub } { rbh 1 sub } ifelse
-	/rbh exch def
-	/uu rb rbh get def
-	rb rbh null put
+	/uu undoManager /undo call def
 	
 	/canUndo { uu null ne } def
 	
@@ -374,6 +387,7 @@
 	    	/_c a 2 get def
     	
 	    	gLevel _y get _x _c put
+			% TODO: redraw
 
 	    	% update push counter
 	    	_c ($) eq _c (*) eq or {
@@ -439,6 +453,7 @@
 } bind def
 
 % handles player movement and game logic
+% TODO: return list of coordinates to redraw
 /_key_Move_b_ {
 
 	/key exch def
@@ -606,8 +621,6 @@
   
 /_l_SetupGameState {
     /gLevel exch _s_ParseLevel_a_ def
-	/rb RB_SIZE array def % moves ring buffer
-	/rbh 0 def            % ring buffer head
 	/movesCount 0 def
     /pushCount 0 def
     /gWin false def
@@ -636,13 +649,17 @@ DrawLevel
 		    gOrderedLevelsIndex gOrderedLevels length 1 sub lt {
 		        /gOrderedLevelsIndex gOrderedLevelsIndex 1 add def
 		        gOrderedLevels gOrderedLevelsIndex get _l_SetupGameState
+				
+				undoManager /reset call
 				DrawLevel
 		    } {
 		        (No more levels!) =
 		    } ifelse
 		} {
 			key _key_Move_b_ {
-				DrawLevel
+				DrawLevel % TODO: remove
+				% TODO: draw changed coordinates only
+				% TODO: draw infos
 			} if
 		} ifelse
     } {
