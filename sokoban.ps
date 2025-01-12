@@ -306,43 +306,42 @@ end
 		c x y _c_x_y_DrawChar
 	} _p_EnumerateLevel
 	
+	flushpage
+} def
+
+/DrawInfos {
 	gsave
+
+	1 setgray
+	0 0 200 30 rectfill
+
+	0 setgray
 
 	% level number
 	
 	0 0 moveto
-	0.5 setgray
 	(Level:) show
 	levelsIndex 2 string cvs show
-
+	
 	% moves counter
 	
 	60 0 moveto
-	0.5 setgray
-	
 	(Moves:) show
 	movesCount 3 string cvs show
 	
 	% push counter
 
 	120 0 moveto
-	0.5 setgray
-
 	(Push:) show
 	pushCount 3 string cvs show
 	
 	% win message
 
 	0 20 moveto
-	0.5 setgray
-	
+	1 setgray	
 	gWin { (WIN!) show } if
 
 	grestore
-	
-	%
-	
-	flushpage
 } def
 
 /_updates_UpdateLevel {	
@@ -643,6 +642,7 @@ end
 
 levels levelsIndex get _l_SetupGameState
 DrawLevel
+DrawInfos
 
 % main game loop
 {
@@ -663,9 +663,9 @@ DrawLevel
 		    } ifelse
 		} {
 			key _key_Move_b_ {
-				% TODO: draw infos
-				flush
+				DrawInfos
 				flushpage
+				flush
 			} if
 		} ifelse
     } {
