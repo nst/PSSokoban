@@ -24,28 +24,21 @@
 /MAX_WIDTH 24 def
 /MAX_HEIGHT 12 def
 
-%---------------------------------------
-% Undo Manager
-/call { exch begin load exec end } def
-/undoManager 10 dict def
-undoManager begin
-	/MAX 1000 def
-	/ringBuffer MAX array def
-	/head 0 def
-    /do {
-		ringBuffer head 3 -1 roll put
-		/head head 1 add MAX mod def
-	} def
-	/reset { /ringBuffer MAX array def } def
-    /undo {
-		/head head 0 eq { MAX 1 sub } { head 1 sub } ifelse def
-		ringBuffer head get % result
-		ringBuffer head null put
-	} def
-end
-%---------------------------------------
-
 /Helvetica findfont 10 scalefont setfont
+
+% undo manager
+/umSize 1000 def
+/umRingBuffer umSize array def
+/umHead 0 def
+/umDo {
+	umRingBuffer umHead 3 -1 roll put
+	/umHead umHead 1 add umSize mod def
+} def
+/umUndo {
+	/umHead umHead 0 eq { umSize 1 sub } { umHead 1 sub } ifelse def
+	umRingBuffer umHead get % result
+	umRingBuffer umHead null put	
+} def
 
 % converts a level string into a 2D array of characters
 /_s_ParseLevel_a_ {
@@ -374,13 +367,13 @@ end
 		c_ x_ y_ _c_x_y_DrawChar
     } for
 
-	uu undoManager /do call
+	uu umDo
 } bind def
 
 % reverts last move
 /Undo_b_ {
 	
-	/uu undoManager /undo call def
+	/uu umUndo def
 	
 	/canUndo { uu null ne } def
 	
@@ -657,7 +650,7 @@ DrawLevelAndInfos
 		        /levelsIndex levelsIndex 1 add def
 		        levels levelsIndex get _l_SetupGameState
 				
-				undoManager /reset call
+				/umRingBuffer umSize array def		 
 				DrawLevelAndInfos
 		    } {
 		        (No more levels!) =
