@@ -1,7 +1,7 @@
 # PSSokoban
 A Sokoban implementation in PostScript
 
-<img src="pssokoban.png" width="320" align="center"></src>
+<img src="pssokoban.gif" width="320" align="center"></src>
 
 #### Motivation
 
