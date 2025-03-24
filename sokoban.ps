@@ -3,8 +3,7 @@
 %%Creator: Nicolas Seriot
 %%BoundingBox: 0 0 600 300
 
-% rm /tmp/p; mkfifo /tmp/p; cat sokoban.ps /tmp/p | gv -
-% rm /tmp/p; mkfifo /tmp/p; cat sokoban.ps /tmp/p | gv -q -media=bbox -
+% rm /tmp/p; mkfifo /tmp/p; cat sokoban.ps /tmp/p | gs -
 
 % stty raw -echo; cat > /tmp/p
 
@@ -31,13 +30,13 @@
 /umRingBuffer umSize array def
 /umHead 0 def
 /umDo {
-	umRingBuffer umHead 3 -1 roll put
-	/umHead umHead 1 add umSize mod def
+    umRingBuffer umHead 3 -1 roll put
+    /umHead umHead 1 add umSize mod def
 } def
 /umUndo {
-	/umHead umHead 0 eq { umSize 1 sub } { umHead 1 sub } ifelse def
-	umRingBuffer umHead get % result
-	umRingBuffer umHead null put	
+    /umHead umHead 0 eq { umSize 1 sub } { umHead 1 sub } ifelse def
+    umRingBuffer umHead get % result
+    umRingBuffer umHead null put    
 } def
 
 % converts a level string into a 2D array of characters
@@ -54,18 +53,18 @@
 
   0 1 sLength 1 sub {
     /i exch def
-	
+    
     /c s i 1 getinterval def
-	
-	c (\n) eq i sLength 1 sub eq or {
-		lines y line put
-		/line MAX_WIDTH array def
-		/y y 1 add def
-		/x 0 def
+    
+    c (\n) eq i sLength 1 sub eq or {
+        lines y line put
+        /line MAX_WIDTH array def
+        /y y 1 add def
+        /x 0 def
     } {
         c (_) eq { /c (-) def } if % XSB format http://sokoban.org/about_sokoban.php
-	    line x c put
-		/x x 1 add def    	
+        line x c put
+        /x x 1 add def        
     } ifelse
 
   } for
@@ -76,166 +75,166 @@
 
 /ImageDataBox {
   (
-	  000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 
-	  000 C60 DC2 DC2 DC2 DC2 DC2 DC2 DC2 DC2 DC2 DC2 DC2 DC2 DC2 000 
-	  000 C60 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 DC2 000 
-	  000 C60 FA0 000 000 000 000 000 000 000 000 000 000 FA0 DC2 000 
-	  000 C60 FA0 000 FA0 000 C60 C60 C60 C60 C60 C60 000 FA0 DC2 000 
-	  000 C60 FA0 000 000 FA0 000 FA0 FA0 FA0 FA0 DC2 000 FA0 DC2 000 
-	  000 C60 FA0 000 C60 000 FA0 000 FA0 FA0 FA0 DC2 000 FA0 DC2 000 
-	  000 C60 FA0 000 C60 FA0 000 FA0 000 FA0 FA0 DC2 000 FA0 DC2 000 
-	  000 C60 FA0 000 C60 FA0 FA0 000 FA0 000 FA0 DC2 000 FA0 DC2 000 
-	  000 C60 FA0 000 C60 FA0 FA0 FA0 000 FA0 000 DC2 000 FA0 DC2 000 
-	  000 C60 FA0 000 C60 FA0 FA0 FA0 FA0 000 FA0 000 000 FA0 DC2 000 
-	  000 C60 FA0 000 C60 DC2 DC2 DC2 DC2 DC2 000 FA0 000 FA0 DC2 000 
-	  000 C60 FA0 000 000 000 000 000 000 000 000 000 000 FA0 DC2 000 
-	  000 C60 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 DC2 000 
-	  000 C60 C60 C60 C60 C60 C60 C60 C60 C60 C60 C60 C60 C60 C60 000 
-	  000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000
+      000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 
+      000 C60 DC2 DC2 DC2 DC2 DC2 DC2 DC2 DC2 DC2 DC2 DC2 DC2 DC2 000 
+      000 C60 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 DC2 000 
+      000 C60 FA0 000 000 000 000 000 000 000 000 000 000 FA0 DC2 000 
+      000 C60 FA0 000 FA0 000 C60 C60 C60 C60 C60 C60 000 FA0 DC2 000 
+      000 C60 FA0 000 000 FA0 000 FA0 FA0 FA0 FA0 DC2 000 FA0 DC2 000 
+      000 C60 FA0 000 C60 000 FA0 000 FA0 FA0 FA0 DC2 000 FA0 DC2 000 
+      000 C60 FA0 000 C60 FA0 000 FA0 000 FA0 FA0 DC2 000 FA0 DC2 000 
+      000 C60 FA0 000 C60 FA0 FA0 000 FA0 000 FA0 DC2 000 FA0 DC2 000 
+      000 C60 FA0 000 C60 FA0 FA0 FA0 000 FA0 000 DC2 000 FA0 DC2 000 
+      000 C60 FA0 000 C60 FA0 FA0 FA0 FA0 000 FA0 000 000 FA0 DC2 000 
+      000 C60 FA0 000 C60 DC2 DC2 DC2 DC2 DC2 000 FA0 000 FA0 DC2 000 
+      000 C60 FA0 000 000 000 000 000 000 000 000 000 000 FA0 DC2 000 
+      000 C60 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 FA0 DC2 000 
+      000 C60 C60 C60 C60 C60 C60 C60 C60 C60 C60 C60 C60 C60 C60 000 
+      000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000
   )
 } bind def
 
 /ImageDataWall {
-	(
-		255 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
-		255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 
-	)
+    (
+        255 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 089 089 089 089 089 089 089 089 089 089 089 089 089 089 4CC 
+        255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 
+    )
 } bind def
 
 /ImageDataFloor {
-	(
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8
-	)
+    (
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8 DB8
+    )
 } bind def
 
 /ImageDataGoal {
-	(
-		741 741 741 741 741 741 741 741 741 741 741 741 741 741 741 741 
-		A87 741 741 741 741 741 741 741 741 741 741 741 741 741 741 741 
-		A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
-		A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
-		A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
-		A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
-		A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
-		A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
-		A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
-		A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
-		A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
-		A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
-		A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
-		A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
-		A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 741 741 
-		A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 741 	
-	)
+    (
+        741 741 741 741 741 741 741 741 741 741 741 741 741 741 741 741 
+        A87 741 741 741 741 741 741 741 741 741 741 741 741 741 741 741 
+        A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
+        A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
+        A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
+        A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
+        A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
+        A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
+        A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
+        A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
+        A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
+        A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
+        A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
+        A87 A87 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 C96 741 741 
+        A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 741 741 
+        A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 A87 741     
+    )
 } bind def
 
 /ImageDataBoxOnGoal {
-	(
-		000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 
-		000 F80 FF3 FF3 FF3 FF3 FF3 FF3 FF3 FF3 FF3 FF3 FF3 FF3 FF3 000 
-		000 F80 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FF3 000 
-		000 F80 FD0 000 000 000 000 000 000 000 000 000 000 FD0 FF3 000 
-		000 F80 FD0 000 FD0 000 F80 F80 F80 F80 F80 F80 000 FD0 FF3 000 
-		000 F80 FD0 000 000 FD0 000 FD0 FD0 FD0 FD0 FF3 000 FD0 FF3 000 
-		000 F80 FD0 000 F80 000 FD0 000 FD0 FD0 FD0 FF3 000 FD0 FF3 000 
-		000 F80 FD0 000 F80 FD0 000 FD0 000 FD0 FD0 FF3 000 FD0 FF3 000 
-		000 F80 FD0 000 F80 FD0 FD0 000 FD0 000 FD0 FF3 000 FD0 FF3 000 
-		000 F80 FD0 000 F80 FD0 FD0 FD0 000 FD0 000 FF3 000 FD0 FF3 000 
-		000 F80 FD0 000 F80 FD0 FD0 FD0 FD0 000 FD0 000 000 FD0 FF3 000 
-		000 F80 FD0 000 F80 FF3 FF3 FF3 FF3 FF3 000 FD0 000 FD0 FF3 000 
-		000 F80 FD0 000 000 000 000 000 000 000 000 000 000 FD0 FF3 000 
-		000 F80 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FF3 000 
-		000 F80 F80 F80 F80 F80 F80 F80 F80 F80 F80 F80 F80 F80 F80 000 
-		000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 
-		)
+    (
+        000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 
+        000 F80 FF3 FF3 FF3 FF3 FF3 FF3 FF3 FF3 FF3 FF3 FF3 FF3 FF3 000 
+        000 F80 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FF3 000 
+        000 F80 FD0 000 000 000 000 000 000 000 000 000 000 FD0 FF3 000 
+        000 F80 FD0 000 FD0 000 F80 F80 F80 F80 F80 F80 000 FD0 FF3 000 
+        000 F80 FD0 000 000 FD0 000 FD0 FD0 FD0 FD0 FF3 000 FD0 FF3 000 
+        000 F80 FD0 000 F80 000 FD0 000 FD0 FD0 FD0 FF3 000 FD0 FF3 000 
+        000 F80 FD0 000 F80 FD0 000 FD0 000 FD0 FD0 FF3 000 FD0 FF3 000 
+        000 F80 FD0 000 F80 FD0 FD0 000 FD0 000 FD0 FF3 000 FD0 FF3 000 
+        000 F80 FD0 000 F80 FD0 FD0 FD0 000 FD0 000 FF3 000 FD0 FF3 000 
+        000 F80 FD0 000 F80 FD0 FD0 FD0 FD0 000 FD0 000 000 FD0 FF3 000 
+        000 F80 FD0 000 F80 FF3 FF3 FF3 FF3 FF3 000 FD0 000 FD0 FF3 000 
+        000 F80 FD0 000 000 000 000 000 000 000 000 000 000 FD0 FF3 000 
+        000 F80 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FD0 FF3 000 
+        000 F80 F80 F80 F80 F80 F80 F80 F80 F80 F80 F80 F80 F80 F80 000 
+        000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 
+        )
 } bind def
 
 /ImageDataManOnFloor {
-	(
-		DB8 DB8 DB8 DB8 DB8 101 101 101 101 101 101 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 101 843 D72 D72 D72 D72 843 101 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 101 843 D72 843 D72 DD5 843 843 843 101 DB8 DB8 DB8 
-		DB8 DB8 DB8 101 DD5 843 DD5 DD5 D72 423 D72 843 101 DB8 DB8 DB8 
-		DB8 DB8 DB8 101 843 D72 423 843 423 D72 423 843 101 DB8 DB8 DB8 
-		DB8 DB8 DB8 101 843 423 101 DD5 DD5 101 D72 423 101 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 101 DD5 101 DED DED 101 DD5 101 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 101 DA9 DA9 DA9 DA9 101 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 101 57C 843 D72 D72 843 57C 101 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 101 57C 336 57C 57C 57C 57C 336 57C 101 DB8 DB8 DB8 
-		DB8 DB8 DB8 101 DA9 101 57C 57C 57C 57C 101 DA9 101 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 101 101 D44 423 423 D44 101 101 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 DB8 101 D44 423 423 D44 101 DB8 DB8 DB8 DB8 DB8 
-		DB8 DB8 DB8 776 776 101 D72 423 423 D72 101 776 776 DB8 DB8 DB8 
-		DB8 DB8 DB8 776 776 776 101 101 101 101 776 776 776 DB8 DB8 DB8 
-		DB8 DB8 DB8 DB8 776 776 776 776 776 776 776 776 DB8 DB8 DB8 DB8 
-	)
+    (
+        DB8 DB8 DB8 DB8 DB8 101 101 101 101 101 101 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 101 843 D72 D72 D72 D72 843 101 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 101 843 D72 843 D72 DD5 843 843 843 101 DB8 DB8 DB8 
+        DB8 DB8 DB8 101 DD5 843 DD5 DD5 D72 423 D72 843 101 DB8 DB8 DB8 
+        DB8 DB8 DB8 101 843 D72 423 843 423 D72 423 843 101 DB8 DB8 DB8 
+        DB8 DB8 DB8 101 843 423 101 DD5 DD5 101 D72 423 101 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 101 DD5 101 DED DED 101 DD5 101 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 101 DA9 DA9 DA9 DA9 101 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 101 57C 843 D72 D72 843 57C 101 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 101 57C 336 57C 57C 57C 57C 336 57C 101 DB8 DB8 DB8 
+        DB8 DB8 DB8 101 DA9 101 57C 57C 57C 57C 101 DA9 101 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 101 101 D44 423 423 D44 101 101 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 DB8 101 D44 423 423 D44 101 DB8 DB8 DB8 DB8 DB8 
+        DB8 DB8 DB8 776 776 101 D72 423 423 D72 101 776 776 DB8 DB8 DB8 
+        DB8 DB8 DB8 776 776 776 101 101 101 101 776 776 776 DB8 DB8 DB8 
+        DB8 DB8 DB8 DB8 776 776 776 776 776 776 776 776 DB8 DB8 DB8 DB8 
+    )
 } bind def
 
 /ImageDataManOnGoal {
-	(
-		741 741 741 741 741 101 101 101 101 101 101 741 741 741 741 741 
-		A87 741 741 741 101 843 D72 D72 D72 D72 843 101 741 741 741 741 
-		A87 A87 C96 101 843 D72 843 D72 DD5 843 843 843 101 C96 741 741 
-		A87 A87 C96 101 DD5 843 DD5 DD5 D72 423 D72 843 101 C96 741 741 
-		A87 A87 C96 101 843 D72 423 843 423 D72 423 843 101 C96 741 741 
-		A87 A87 C96 101 843 423 101 DD5 DD5 101 D72 423 101 C96 741 741 
-		A87 A87 C96 C96 101 DD5 101 DED DED 101 DD5 101 C96 C96 741 741 
-		A87 A87 C96 C96 C96 101 DA9 DA9 DA9 DA9 101 C96 C96 C96 741 741 
-		A87 A87 C96 C96 101 57C 843 D72 D72 843 57C 101 C96 C96 741 741 
-		A87 A87 C96 101 57C 336 57C 57C 57C 57C 336 57C 101 C96 741 741 
-		A87 A87 C96 101 DA9 101 57C 57C 57C 57C 101 DA9 101 C96 741 741 
-		A87 A87 C96 C96 101 101 D44 423 423 D44 101 101 C96 C96 741 741 
-		A87 A87 C96 C96 C96 101 D44 423 423 D44 101 C96 C96 C96 741 741 
-		A87 A87 C96 776 776 101 D72 423 423 D72 101 776 776 C96 741 741 
-		A87 A87 A87 776 776 776 101 101 101 101 776 776 776 A87 741 741 
-		A87 A87 A87 A87 776 776 776 776 776 776 776 776 A87 A87 A87 741 
-	)
+    (
+        741 741 741 741 741 101 101 101 101 101 101 741 741 741 741 741 
+        A87 741 741 741 101 843 D72 D72 D72 D72 843 101 741 741 741 741 
+        A87 A87 C96 101 843 D72 843 D72 DD5 843 843 843 101 C96 741 741 
+        A87 A87 C96 101 DD5 843 DD5 DD5 D72 423 D72 843 101 C96 741 741 
+        A87 A87 C96 101 843 D72 423 843 423 D72 423 843 101 C96 741 741 
+        A87 A87 C96 101 843 423 101 DD5 DD5 101 D72 423 101 C96 741 741 
+        A87 A87 C96 C96 101 DD5 101 DED DED 101 DD5 101 C96 C96 741 741 
+        A87 A87 C96 C96 C96 101 DA9 DA9 DA9 DA9 101 C96 C96 C96 741 741 
+        A87 A87 C96 C96 101 57C 843 D72 D72 843 57C 101 C96 C96 741 741 
+        A87 A87 C96 101 57C 336 57C 57C 57C 57C 336 57C 101 C96 741 741 
+        A87 A87 C96 101 DA9 101 57C 57C 57C 57C 101 DA9 101 C96 741 741 
+        A87 A87 C96 C96 101 101 D44 423 423 D44 101 101 C96 C96 741 741 
+        A87 A87 C96 C96 C96 101 D44 423 423 D44 101 C96 C96 C96 741 741 
+        A87 A87 C96 776 776 101 D72 423 423 D72 101 776 776 C96 741 741 
+        A87 A87 A87 776 776 776 101 101 101 101 776 776 776 A87 741 741 
+        A87 A87 A87 A87 776 776 776 776 776 776 776 776 A87 A87 A87 741 
+    )
 } bind def
 
 /_imageData_DrawImage {
-	/imageData exch def
-	
-	0 S translate
-	<<
-	  /ImageType 1
-	  /Width 16
-	  /Height 16
-	  /BitsPerComponent 4
-	  /ColorSpace /DeviceRGB
-	  /ImageMatrix [1 0 0 -1 0 0]
-	  /DataSource imageData /ASCIIHexDecode filter
-	  /Interpolate false % default is false
-	>>
-	image
+    /imageData exch def
+    
+    0 S translate
+    <<
+      /ImageType 1
+      /Width 16
+      /Height 16
+      /BitsPerComponent 4
+      /ColorSpace /DeviceRGB
+      /ImageMatrix [1 0 0 -1 0 0]
+      /DataSource imageData /ASCIIHexDecode filter
+      /Interpolate false % default is false
+    >>
+    image
 
 } bind def
 
@@ -249,97 +248,97 @@
 
 % maps characters to drawing functions
 /_c_DrawChar {
-	/c exch def
-	
-	c (@) eq { DrawManOnFloor } if
-	c (+) eq { DrawManOnGoal } if
-	c ($) eq { DrawBox } if
-	c (*) eq { DrawBoxOnGoal } if
-	c (#) eq { DrawWall } if
-	c (.) eq { DrawGoal } if
-	c (_) eq { DrawFloor } if
-	c (-) eq { DrawFloor } if
-	%c ( ) eq {  } if
-	
+    /c exch def
+    
+    c (@) eq { DrawManOnFloor } if
+    c (+) eq { DrawManOnGoal } if
+    c ($) eq { DrawBox } if
+    c (*) eq { DrawBoxOnGoal } if
+    c (#) eq { DrawWall } if
+    c (.) eq { DrawGoal } if
+    c (_) eq { DrawFloor } if
+    c (-) eq { DrawFloor } if
+    %c ( ) eq {  } if
+    
 } bind def
 
 /_c_x_y_DrawChar {
-	/y exch def
-	/x exch def
-	/c exch def
-	
-	gsave
-	x S mul MAX_HEIGHT y sub S mul translate
-	c _c_DrawChar
-	grestore
+    /y exch def
+    /x exch def
+    /c exch def
+    
+    gsave
+    x S mul MAX_HEIGHT y sub S mul translate
+    c _c_DrawChar
+    grestore
 } def
 
 /DrawLevelAndInfos {
-	
-	gsave
-	
-	% background
-	
-	/h MAX_HEIGHT 1 add S mul def
-	/w MAX_WIDTH S mul def
+    
+    gsave
+    
+    % background
+    
+    /h MAX_HEIGHT 1 add S mul def
+    /w MAX_WIDTH S mul def
 
-	/h_min S neg def
-	/h_max h S add def
-	/w_min S neg def 
-	/w_max w S add def
-	
-	1 setgray
-	w_min h_min w_max h_max rectfill
-	grestore
-	
-	% cells
-	
-	{		
-		/c exch def
-		c x y _c_x_y_DrawChar
-	} _p_EnumerateLevel
-	
-	DrawInfos
-	
-	flushpage
+    /h_min S neg def
+    /h_max h S add def
+    /w_min S neg def 
+    /w_max w S add def
+    
+    1 setgray
+    w_min h_min w_max h_max rectfill
+    grestore
+    
+    % cells
+    
+    {        
+        /c exch def
+        c x y _c_x_y_DrawChar
+    } _p_EnumerateLevel
+    
+    DrawInfos
+    
+    flushpage
 } def
 
 /DrawInfos {
-	gsave
+    gsave
 
-	1 setgray
-	0 0 200 30 rectfill
+    1 setgray
+    0 0 200 30 rectfill
 
-	0 setgray
+    0 setgray
 
-	% level number
-	
-	0 0 moveto
-	(Level:) show
-	levelsIndex 2 string cvs show
-	
-	% moves counter
-	
-	60 0 moveto
-	(Moves:) show
-	movesCount 3 string cvs show
-	
-	% push counter
+    % level number
+    
+    0 0 moveto
+    (Level:) show
+    levelsIndex 2 string cvs show
+    
+    % moves counter
+    
+    60 0 moveto
+    (Moves:) show
+    movesCount 3 string cvs show
+    
+    % push counter
 
-	120 0 moveto
-	(Push:) show
-	pushCount 3 string cvs show
-	
-	% win message
+    120 0 moveto
+    (Push:) show
+    pushCount 3 string cvs show
+    
+    % win message
 
-	0 20 moveto
-	1 setgray	
-	gWin { (WIN!) show } if
+    0 20 moveto
+    1 setgray    
+    gWin { (WIN!) show } if
 
-	grestore
+    grestore
 } def
 
-/_updates_UpdateLevel {	
+/_updates_UpdateLevel {    
     /u exch def
     /uu 3 array def
         
@@ -359,230 +358,230 @@
 
         % update push counter if moving a box
         _c ($) eq _c (*) eq or {
-    	    /pushCount pushCount 1 add def
+            /pushCount pushCount 1 add def
         } if
 
         % update level
         gLevel y_ get x_ c_ put
-		c_ x_ y_ _c_x_y_DrawChar
+        c_ x_ y_ _c_x_y_DrawChar
     } for
 
-	uu umDo
+    uu umDo
 } bind def
 
 % reverts last move
 /Undo_b_ {
-	
-	/uu umUndo def
-	
-	/canUndo { uu null ne } def
-	
-	canUndo {
-		uu {
-	    	/a exch def
-			
-	    	a null eq { canUndo exit } if
-    	
-	    	/_x a 0 get def
-	    	/_y a 1 get def
-	    	/_c a 2 get def
-    	
-	    	gLevel _y get _x _c put
-			_c _x _y _c_x_y_DrawChar
-
-	    	% update push counter
-	    	_c ($) eq _c (*) eq or {
-	    	    /pushCount pushCount 1 sub def
-	    	} if
-    	
-	    	flush
+    
+    /uu umUndo def
+    
+    /canUndo { uu null ne } def
+    
+    canUndo {
+        uu {
+            /a exch def
             
-	    } forall		
-		/movesCount movesCount 1 sub def
-	} if
+            a null eq { canUndo exit } if
+        
+            /_x a 0 get def
+            /_y a 1 get def
+            /_c a 2 get def
+        
+            gLevel _y get _x _c put
+            _c _x _y _c_x_y_DrawChar
 
-	canUndo
+            % update push counter
+            _c ($) eq _c (*) eq or {
+                /pushCount pushCount 1 sub def
+            } if
+        
+            flush
+            
+        } forall        
+        /movesCount movesCount 1 sub def
+    } if
+
+    canUndo
 } bind def
 
 % iterates through level array
 /_p_EnumerateLevel {
-	/p exch def
-	
-	/nbLines gLevel length def
-	
-	0 1 nbLines 1 sub {
-		/y exch def
-		/line gLevel y get def
-		
-		line null eq { exit } if
-		
-		0 1 line length 1 sub {
-			/x exch def
-			/c_ line x get def
-	    
-			c_ null eq { exit } if
-	    
-			c_ p
-		} for
-	} for
-		
+    /p exch def
+    
+    /nbLines gLevel length def
+    
+    0 1 nbLines 1 sub {
+        /y exch def
+        /line gLevel y get def
+        
+        line null eq { exit } if
+        
+        0 1 line length 1 sub {
+            /x exch def
+            /c_ line x get def
+        
+            c_ null eq { exit } if
+        
+            c_ p
+        } for
+    } for
+        
 } bind def
 
 % look for specified characters
 /_a_FindChars_x_y_ {
-	/a exch def
-	
-	/X null def
-	/Y null def
-	
-	{
-		/c exch def
-		a {
-			/ac exch def
-			
-			c ac eq {
-				/X x def
-				/Y y def
-				exit
-			} if
-			
-		} forall
-	} _p_EnumerateLevel
-	
-	X
-	Y
+    /a exch def
+    
+    /X null def
+    /Y null def
+    
+    {
+        /c exch def
+        a {
+            /ac exch def
+            
+            c ac eq {
+                /X x def
+                /Y y def
+                exit
+            } if
+            
+        } forall
+    } _p_EnumerateLevel
+    
+    X
+    Y
 } bind def
 
 % handles player movement and game logic
 /_key_Move_b_ {
 
-	/key exch def
-	/canMove false def
-		
-	(-> ) =only key ==
-		
+    /key exch def
+    /canMove false def
+        
+    (-> ) =only key ==
+        
     % handle arrow keys (65-68)
-	 65 key eq
-	 66 key eq or
-	 67 key eq or
-	 68 key eq or {
+     65 key eq
+     66 key eq or
+     67 key eq or
+     68 key eq or {
 
-		key 65 ge key 68 le and {
-			/xDir 0 def
-			/yDir 0 def
+        key 65 ge key 68 le and {
+            /xDir 0 def
+            /yDir 0 def
 
-			65 key eq { /yDir -1 def (* UP)==    } if % UP
-			66 key eq { /yDir  1 def (* DOWN)==  } if % DOWN
-			67 key eq { /xDir  1 def (* RIGHT)== } if % RIGHT
-			68 key eq { /xDir -1 def (* LEFT)==  } if % LEFT
-		} if
-		
+            65 key eq { /yDir -1 def (* UP)==    } if % UP
+            66 key eq { /yDir  1 def (* DOWN)==  } if % DOWN
+            67 key eq { /xDir  1 def (* RIGHT)== } if % RIGHT
+            68 key eq { /xDir -1 def (* LEFT)==  } if % LEFT
+        } if
+        
         % find player position
-		[(@) (+)] _a_FindChars_x_y_
-				
-		/my exch def
-		/mx exch def
-		
-		/mx_ mx xDir add def
-		/my_ my yDir add def		
-    	
-		/from gLevel my get mx get def
-		/to   gLevel my_ get mx_ get def
-		
-		(from:) =only from ==
-		(to:) =only to ==
-		
-		/updates 3 array def
-		/updatesCount 0 def
-		
+        [(@) (+)] _a_FindChars_x_y_
+                
+        /my exch def
+        /mx exch def
+        
+        /mx_ mx xDir add def
+        /my_ my yDir add def        
+        
+        /from gLevel my get mx get def
+        /to   gLevel my_ get mx_ get def
+        
+        (from:) =only from ==
+        (to:) =only to ==
+        
+        /updates 3 array def
+        /updatesCount 0 def
+        
         % handle different destination types
-		(#) to eq {
-			% can't move into wall
-		} if
-		
-		(-) to eq {
-			/canMove true def
-			/to (@) def
-		} if
-		
-		(.) to eq {
-			/canMove true def
-			/to (+) def
-		} if
-    	
-		% handle box pushing
-		(*) to eq ($) to eq or {
-			
-			/dst gLevel my_ yDir add get mx_ xDir add get def
-			
-			dst (-) eq {
-				/canMove true def
-				
-				updates updatesCount [mx_ xDir add my_ yDir add ($)] put
-				/updatesCount updatesCount 1 add def
-			} if
-    	    
-			dst (.) eq {
-				/canMove true def
-				updates updatesCount [mx_ xDir add my_ yDir add (*)] put
-				/updatesCount updatesCount 1 add def
-			} if
-    	
-			canMove {
-				to ($) eq { /to (@) def } if
-				to (*) eq { /to (+) def } if
-			} if
-    	
-		} if
-		
-		% update source cell
-		(+) from eq canMove and {
-			/from (.) def
-		} if
-    	
-		(@) from eq canMove and {
-			/from (-) def
-		} if
-		
-		% apply updates if move is valid
-		canMove {
-			/movesCount movesCount 1 add def
-			
-			updates updatesCount [mx  my  from] put
-			/updateCount updatesCount 1 add def
-    	
-			updates updateCount [mx_ my_ to] put
-			/updateCount updateCount 1 add def
-    	
-			updates _updates_UpdateLevel
-			
-			/mx mx_ def
-			/my my_ def
-		} if
-		
-		% win when all boxes on goals	
-		[($)] _a_FindChars_x_y_
-		/by exch def
-		/bx exch def
-	
-		by null eq bx null eq and {
-			(WIN) = flush
-			/gWin true def
-		} if
-		
-	} if
-	
-	% handle undo (z key)
-	key 122 eq {
-		(* UNDO *) = flush
-		
-		Undo_b_
-		/canMove exch def
-		
-	} if
-	
-	canMove
-	
+        (#) to eq {
+            % can't move into wall
+        } if
+        
+        (-) to eq {
+            /canMove true def
+            /to (@) def
+        } if
+        
+        (.) to eq {
+            /canMove true def
+            /to (+) def
+        } if
+        
+        % handle box pushing
+        (*) to eq ($) to eq or {
+            
+            /dst gLevel my_ yDir add get mx_ xDir add get def
+            
+            dst (-) eq {
+                /canMove true def
+                
+                updates updatesCount [mx_ xDir add my_ yDir add ($)] put
+                /updatesCount updatesCount 1 add def
+            } if
+            
+            dst (.) eq {
+                /canMove true def
+                updates updatesCount [mx_ xDir add my_ yDir add (*)] put
+                /updatesCount updatesCount 1 add def
+            } if
+        
+            canMove {
+                to ($) eq { /to (@) def } if
+                to (*) eq { /to (+) def } if
+            } if
+        
+        } if
+        
+        % update source cell
+        (+) from eq canMove and {
+            /from (.) def
+        } if
+        
+        (@) from eq canMove and {
+            /from (-) def
+        } if
+        
+        % apply updates if move is valid
+        canMove {
+            /movesCount movesCount 1 add def
+            
+            updates updatesCount [mx  my  from] put
+            /updateCount updatesCount 1 add def
+        
+            updates updateCount [mx_ my_ to] put
+            /updateCount updateCount 1 add def
+        
+            updates _updates_UpdateLevel
+            
+            /mx mx_ def
+            /my my_ def
+        } if
+        
+        % win when all boxes on goals    
+        [($)] _a_FindChars_x_y_
+        /by exch def
+        /bx exch def
+    
+        by null eq bx null eq and {
+            (WIN) = flush
+            /gWin true def
+        } if
+        
+    } if
+    
+    % handle undo (z key)
+    key 122 eq {
+        (* UNDO *) = flush
+        
+        Undo_b_
+        /canMove exch def
+        
+    } if
+    
+    canMove
+    
 } bind def
 
 % levels from David W. Skinner
@@ -621,7 +620,7 @@
   
 /_l_SetupGameState {
     /gLevel exch _s_ParseLevel_a_ def
-	/movesCount 0 def
+    /movesCount 0 def
     /pushCount 0 def
     /gWin false def
 } bind def
@@ -641,32 +640,32 @@ DrawLevelAndInfos
 % main game loop
 {
     stdin read {
-		/key exch def
-		
-		% move to next level with any key
-		gWin key 27 ne and key 91 ne and key 10 ne and {
-			
-		    levelsIndex levels length 1 sub lt {
-		        /levelsIndex levelsIndex 1 add def
-		        levels levelsIndex get _l_SetupGameState
-				
-				/umRingBuffer umSize array def		 
-				DrawLevelAndInfos
-		    } {
-		        (No more levels!) =
-		    } ifelse
-		} {
-			key _key_Move_b_ {
-				DrawInfos
-				flushpage
-				flush
-			} if
-		} ifelse
+        /key exch def
+        
+        % move to next level with any key
+        gWin key 27 ne and key 91 ne and key 10 ne and {
+            
+            levelsIndex levels length 1 sub lt {
+                /levelsIndex levelsIndex 1 add def
+                levels levelsIndex get _l_SetupGameState
+                
+                /umRingBuffer umSize array def         
+                DrawLevelAndInfos
+            } {
+                (No more levels!) =
+            } ifelse
+        } {
+            key _key_Move_b_ {
+                DrawInfos
+                flushpage
+                flush
+            } if
+        } ifelse
     } {
         exit
     } ifelse
-	
-	%gLevel { == } forall
+    
+    %gLevel { == } forall
 
 } loop
 
